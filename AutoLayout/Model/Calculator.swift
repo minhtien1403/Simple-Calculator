@@ -17,15 +17,18 @@ struct Calculator {
     var firstNumber:Double? = nil
     var secondeNumber:Double? = nil
     var result:Double?{
+        guard let a = firstNumber, let b = secondeNumber else{
+            return .none
+        }
         switch operation {
         case .add:
-            return firstNumber! + secondeNumber!
+            return a+b
         case .subtract:
-            return firstNumber! - secondeNumber!
+            return a-b
         case .multiply:
-            return firstNumber! * secondeNumber!
+            return a*b
         case .divide:
-            return firstNumber! / secondeNumber!
+            return a/b
         case .none:
             return 0
         }

@@ -8,10 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
     
     
-    @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet private weak var resultLabel: UILabel!
     private var calc = Calculator()
     
     
@@ -22,10 +22,9 @@ class ViewController: UIViewController {
 
     @IBAction func numberPress(_ sender: UIButton) {
         if (sender.tag == 16){ 
-            guard let currentNumber = resultLabel.text else{
-                return
+            if let currentNumber = resultLabel.text{
+                 resultLabel.text = "\(currentNumber)."
             }
-            resultLabel.text = "\(currentNumber)."
         }
         else{
             let tag = sender.tag - 1
@@ -43,10 +42,12 @@ class ViewController: UIViewController {
         calc.check = true
         
         if calc.firstNumber != nil && calc.secondeNumber != nil{
-            let res = calc.result!
-            resultLabel.text = "\(res)"
-            calc.firstNumber = res
-            calc.secondeNumber = nil
+            if let res = calc.result{
+                resultLabel.text = "\(res)"
+                calc.firstNumber = res
+                calc.secondeNumber = nil
+            }
+            
         }
         if calc.firstNumber == nil{
             calc.firstNumber = Double(resultLabel.text!)
@@ -58,28 +59,33 @@ class ViewController: UIViewController {
             calc.secondeNumber = nil
         }
 
-        if(sender.tag == 11){
+
+        switch sender.tag{
+        case 11:
             calc.operation = .add
-        }
-        if(sender.tag == 12){
+        case 12:
             calc.operation = .subtract
-        }
-        if(sender.tag == 13){
+        case 13:
             calc.operation = .multiply
-        }
-        if(sender.tag == 14){
+        case 14:
             calc.operation = .divide
+        default:
+            return
         }
     }
     
     @IBAction func equalPress(_ sender: Any) {
-        
-        guard let value = Double(resultLabel.text!) else{
+
+        guard let text = resultLabel.text, let value = Double(text) else{
             return
         }
         calc.secondeNumber = value
-        resultLabel.text = "\(calc.result!)"
+        guard let res = calc.result else {
+            return
+        }
+        resultLabel.text = "\(res)"
         calc.reset()
+        
     }
     
     @IBAction func clearAll(_ sender: Any) {
